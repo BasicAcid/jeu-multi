@@ -43,19 +43,19 @@ Paddle.prototype.render = function() {
   context.fillRect(this.x, this.y, this.width, this.height);
 };
 
-function Player() {
+function Player1() {
    this.paddle = new Paddle(175, 580, 50, 10);
 }
 
-function Computer() {
+function Player2() {
   this.paddle = new Paddle(175, 10, 50, 10);
 }
 
-Player.prototype.render = function() {
-  this.paddle.render();
+Player1.prototype.render = function() {
+    this.paddle.render();
 };
 
-Computer.prototype.render = function() {
+Player2.prototype.render = function() {
   this.paddle.render();
 };
 
@@ -74,28 +74,28 @@ Ball.prototype.render = function() {
   context.fill();
 };
 
-var player = new Player();
-var computer = new Computer();
+var player1 = new Player1();
+var player2 = new Player2();
 var ball = new Ball(200, 300);
 
 var render = function() {
   context.fillStyle = "#000000";
   context.fillRect(0, 0, width, height);
-  player.render();
-  computer.render();
+  player1.render();
+  player2.render();
   ball.render();
 };
 
 var update = function() {
-  player.update();
-  ball.update(player.paddle, computer.paddle);
+  player1.update();
+  ball.update(player1.paddle, player2.paddle);
 };
 
 // Keys
 var leftArrow = 37;
 var rightArrow = 39;
 
-Player.prototype.update = function() {
+Player1.prototype.update = function() {
   for(var key in keysDown) {
     var value = Number(key);
     if(value == leftArrow) {
@@ -112,7 +112,7 @@ Player.prototype.update = function() {
 var exLeft = 0;
 var exRight = 400;
 
-Paddle.prototype.move = function(x, y) {
+Player2.prototype.move = function(x, y) {
   this.x += x;
   this.y += y;
   this.x_speed = x;
@@ -122,6 +122,20 @@ Paddle.prototype.move = function(x, y) {
     this.x_speed = 0;
   } else if (this.x + this.width > exRight) { // all the way to the right
     this.x = exRight - this.width;
+    this.x_speed = 0;
+  }
+}
+
+Paddle.prototype.move = function(x, y) {
+  this.x += x;
+  this.y += y;
+  this.x_speed = x;
+  this.y_speed = y;
+  if(this.x < 0) { // all the way to the left
+    this.x = 0;
+    this.x_speed = 0;
+  } else if (this.x + this.width > 400) { // all the way to the right
+    this.x = 400 - this.width;
     this.x_speed = 0;
   }
 }
@@ -175,5 +189,3 @@ window.addEventListener("keydown", function(event) {
 window.addEventListener("keyup", function(event) {
   delete keysDown[event.keyCode];
 });
-
-
